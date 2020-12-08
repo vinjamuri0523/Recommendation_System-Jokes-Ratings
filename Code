@@ -1,0 +1,25 @@
+import pandas as pd
+
+data = pd.read_excel('Ratings.xlsx')
+data.head()
+
+data.groupby('joke_id')['Rating'].mean().sort_values(ascending = False).head()
+data.groupby('joke_id')['Rating'].count().sort_values(ascending = False).head()
+
+ratings = pd.DataFrame(data.groupby('joke_id')['Rating'].mean())
+ratings['no_of_ratings'] = pd.DataFrame(data.groupby('joke_id')['Rating'].count())
+ratings.head()
+
+jokes = data.pivot_table(index = 'user_id', columns = 'joke_id', values = 'Rating')
+jokes.head()
+
+ratings.sort_values('no_of_ratings', ascending = False)
+
+jokes_rating = jokes[136]
+
+similar_to_jokes = jokes.corrwith(jokes_rating)
+
+corr_jokes = pd.DataFrame(similar_to_jokes, columns = ['Correlation'])
+corr_jokes.dropna(inplace = True)
+
+corr_jokes.sort_values('Correlation', ascending = False).head()
